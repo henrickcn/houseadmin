@@ -6,7 +6,7 @@ module.exports = {
   },
   multiPage: true,
   animate: {
-    name: 'slide',
-    direction: 'left'
+    name: 'zoom',
+    direction: 'right'
   }
 }
