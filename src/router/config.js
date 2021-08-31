@@ -27,6 +27,42 @@ const options = {
       redirect: '/login',
       children: [
         {
+          name: '工作台',
+          path: 'workplace',
+          meta: {
+            icon: 'dashboard',
+            page: {
+              closable: false
+            }
+          },
+          component: () => import('@/pages/dashboard/index'),
+        },
+        {
+          path: 'system',
+          name: '系统管理',
+          meta: {
+            icon: 'appstore'
+          },
+          component: BlankView,
+          children: [
+            {
+              path: 'staff',
+              name: '账户管理',
+              component: () => import('@/pages/system/staff/Lists'),
+            },
+            {
+              path: 'auth',
+              name: '权限管理',
+              component: () => import('@/pages/dashboard/analysis'),
+            },
+            {
+              path: 'menu',
+              name: '菜单管理',
+              component: () => import('@/pages/dashboard/analysis'),
+            }
+          ]
+        },
+        {
           path: 'dashboard',
           name: 'Dashboard',
           meta: {

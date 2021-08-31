@@ -115,7 +115,7 @@ export default {
       const loginRes = res.data
       console.log(loginRes)
       if (loginRes.errcode === 0) {
-        const {user, permissions, roles} = loginRes.data
+        const {user, permissions, roles, message} = loginRes.data
         this.setUser(user)
         this.setPermissions(permissions)
         this.setRoles(roles)
@@ -124,8 +124,8 @@ export default {
         getRoutesConfig().then(result => {
           const routesConfig = result.data.data
           loadRoutes(routesConfig)
-          this.$router.push('/dashboard/workplace')
-          this.$message.success(loginRes.message, 3)
+          this.$router.push('/workplace')
+          this.$message.success(message, 3)
         })
       } else {
         this.error = loginRes.errmsg

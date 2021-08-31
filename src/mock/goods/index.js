@@ -58,7 +58,9 @@ const columnsConfig = [
   },
   {
     title: '订单号',
-    dataIndex: 'orderId'
+    dataIndex: 'orderId',
+    fixed: 'left',
+    width: 200
   },
   {
     searchAble: true,

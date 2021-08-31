@@ -14,7 +14,7 @@ const routerMap = {
   },
   root: {
     path: '/',
-    name: '首页',
+    name: '租房管理系统',
     redirect: '/login',
     component: view.tabs
   },
