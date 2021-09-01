@@ -11,6 +11,11 @@ const options = {
       component: () => import('@/pages/login')
     },
     {
+      path: '/reg',
+      name: '企业入驻',
+      component: () => import('@/pages/reg/step')
+    },
+    {
       path: '*',
       name: '404',
       component: () => import('@/pages/exception/404'),

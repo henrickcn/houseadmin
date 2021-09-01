@@ -64,10 +64,10 @@
           </a-form-item>
           <div>
             第三方快捷登录
-            <a-icon class="icon" type="alipay-circle" />
-            <a-icon class="icon" type="taobao-circle" />
-            <a-icon class="icon" type="weibo-circle" />
-            <router-link style="float: right" to="/dashboard/workplace" >企业入驻</router-link>
+            <a-icon class="icon" type="wechat" />
+            <a-icon class="icon" type="qq" />
+            <a-icon class="icon" type="weibo" />
+            <router-link style="float: right" to="/reg" >企业入驻</router-link>
           </div>
         </a-form>
       </div>

@@ -18,6 +18,7 @@ export default {
     }
   },
   created () {
+    console.log(window.location.hostname)
     this.setHtmlTitle()
     this.setLanguage(this.lang)
     enquireScreen(isMobile => this.setDevice(isMobile))
