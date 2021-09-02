@@ -7,10 +7,11 @@ import {request, METHOD, removeAuthorization} from '@/utils/request'
  * @param password 账户密码
  * @returns {Promise<AxiosResponse<T>>}
  */
-export async function login(name, password) {
+export async function login(name, password, agreet) {
   return request(LOGIN, METHOD.POST, {
     username: name,
     password: password,
+    agreet: agreet,
     type: 'pc'
   })
 }
