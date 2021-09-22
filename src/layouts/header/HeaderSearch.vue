@@ -18,7 +18,7 @@ export default {
   name: 'HeaderSearch',
   data () {
     return {
-      dataSource: ['选项一', '选项二'],
+      dataSource: [],
       searchMode: false
     }
   },

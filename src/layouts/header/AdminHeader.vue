@@ -12,11 +12,29 @@
       </div>
       <div :class="['admin-header-right', headerTheme]">
           <header-search class="header-item" @active="val => searchActive = val" />
-          <a-tooltip class="header-item" title="帮助文档" placement="bottom" >
+          <!-- <a-tooltip class="header-item" title="帮助文档" placement="bottom" >
             <a href="https://iczer.gitee.io/vue-antd-admin-docs/" target="_blank">
               <a-icon type="question-circle-o" />
             </a>
-          </a-tooltip>
+          </a-tooltip> -->
+          <div>
+            <a-select
+              show-search
+              placeholder="请选择所属公司"
+              option-filter-prop="children"
+              style="width: 150px"
+              @change="changeCompany"
+              option-label-prop="label"
+              :dropdownMatchSelectWidth="false"
+              :showSearch="true"
+              :defaultValue="companyId"
+            >
+              <a-select-option :label="company.simple_name" :value="company.id" v-for="company in companyList" :key="company.key">
+                【{{company.simple_name}}】{{company.name}}
+              </a-select-option>
+            </a-select>
+          </div>
+          
           <header-notice class="header-item"/>
           <header-avatar class="header-item"/>
           <!-- <a-dropdown class="lang header-item">
@@ -37,7 +55,7 @@ import HeaderSearch from './HeaderSearch'
 import HeaderNotice from './HeaderNotice'
 import HeaderAvatar from './HeaderAvatar'
 import IMenu from '@/components/menu/menu'
-import {mapState, mapMutations} from 'vuex'
+import {mapState, mapMutations, mapGetters} from 'vuex'
 
 export default {
   name: 'AdminHeader',
@@ -55,6 +73,7 @@ export default {
   },
   computed: {
     ...mapState('setting', ['theme', 'isMobile', 'layout', 'systemName', 'lang', 'pageWidth']),
+    ...mapGetters('account', ['companyList', 'companyId']),
     headerTheme () {
       if (this.layout == 'side' && this.theme.mode == 'dark' && !this.isMobile) {
         return 'light'
@@ -79,7 +98,10 @@ export default {
     onSelect (obj) {
       this.$emit('menuSelect', obj)
     },
-    ...mapMutations('setting', ['setLang'])
+    ...mapMutations('setting', ['setLang']),
+    changeCompany (value) {
+      console.log(value)
+    }
   }
 }
 </script>

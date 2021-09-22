@@ -1,4 +1,4 @@
-import {LOGIN, ROUTES} from '@/services/api'
+import {LOGIN, ROUTES, LOGINSMS,LOGINSENDSMS} from '@/services/api'
 import {request, METHOD, removeAuthorization} from '@/utils/request'
 
 /**
@@ -29,8 +29,37 @@ export function logout() {
   localStorage.removeItem(process.env.VUE_APP_ROLES_KEY)
   removeAuthorization()
 }
+
+/**
+ * 发送登录验证码
+ * @param {*} token 临时登录态
+ * @param {*} companyId 所属公司ID
+ * @returns 
+ */
+export async function sendSms(token, companyId) {
+  return request(LOGINSENDSMS, METHOD.POST, {
+    token: token,
+    company_id: companyId
+  })
+}
+
+/**
+ * 短信验证码登录
+ * @param {*} token 临时登录态
+ * @param {*} code 验证码
+ * @returns 
+ */
+export async function loginSms(token, code) {
+  return request(LOGINSMS, METHOD.POST, {
+    token: token,
+    sms_code: code
+  })
+}
+
 export default {
   login,
   logout,
-  getRoutesConfig
+  getRoutesConfig,
+  sendSms,
+  loginSms
 }

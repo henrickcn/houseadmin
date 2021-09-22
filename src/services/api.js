@@ -4,6 +4,8 @@
 const BASE_URL = process.env.VUE_APP_API_BASE_URL
 module.exports = {
   LOGIN: `${BASE_URL}/site/login`,
+  LOGINSENDSMS: `${BASE_URL}/site/get-sms`,
+  LOGINSMS:`${BASE_URL}/site/login-sms`,
   ROUTES: `${BASE_URL}/routes`,
   GOODS: `${BASE_URL}/goods`,
   GOODS_COLUMNS: `${BASE_URL}/columns`,

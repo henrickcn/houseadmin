@@ -4,7 +4,9 @@ export default {
     user: undefined,
     permissions: null,
     roles: null,
-    routesConfig: null
+    routesConfig: null,
+    companyList: null,
+    companyId: null
   },
   getters: {
     user: state => {
@@ -53,6 +55,30 @@ export default {
         }
       }
       return state.routesConfig
+    },
+    companyList: state => {
+      if (!state.companyList) {
+        try {
+          const companyList = localStorage.getItem(process.env.VUE_APP_COMPANY_LIST_KEY)
+          state.companyList = JSON.parse(companyList)
+          state.companyList = state.companyList ? state.companyList : []
+        } catch (e) {
+          console.error(e.message)
+        }
+      }
+      return state.companyList
+    },
+    companyId: state => {
+      if(!state.companyId){
+        try {
+          const companyId = localStorage.getItem(process.env.VUE_APP_COMPANY_ID_KEY)
+          state.companyId = companyId
+          state.companyId = state.companyId ? state.companyId : ''
+        } catch (e) {
+          console.error(e.message)
+        }
+      }
+      return state.companyId
     }
   },
   mutations: {
@@ -71,6 +97,14 @@ export default {
     setRoutesConfig(state, routesConfig) {
       state.routesConfig = routesConfig
       localStorage.setItem(process.env.VUE_APP_ROUTES_KEY, JSON.stringify(routesConfig))
+    },
+    setCompanyList(state, companyList) {
+      state.companyList = companyList
+      localStorage.setItem(process.env.VUE_APP_COMPANY_LIST_KEY, JSON.stringify(companyList))
+    },
+    setCompanyId(state, id) {
+      state.companyId = id
+      localStorage.setItem(process.env.VUE_APP_COMPANY_ID_KEY, id)
     }
   }
 }

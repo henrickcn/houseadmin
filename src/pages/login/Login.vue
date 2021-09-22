@@ -13,7 +13,7 @@
           <a-tabs size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;">
             <a-tab-pane tab="手机号登录" key="1">
               <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon style="margin-bottom: 24px;" />
-              <a-form-item v-if="isShowSms">
+              <a-form-item v-if="!isShowSms">
                 <a-input autocomplete="off" :allowClear="true" v-decorator="[
           'username',
           { rules: [{ required: true, message: '手机号不能为空' }] },
@@ -22,13 +22,35 @@
                 </a-input>
               </a-form-item>
 
-              <a-form-item v-if="isShowSms">
+              <a-form-item v-if="!isShowSms">
                 <a-input-password v-decorator="[
           'password',
           { rules: [{ required: true, message: '密码不能为空' }] },
         ]" size="large" placeholder="请输入密码" >
                   <a-icon slot="prefix" type="key" />
                 </a-input-password>
+              </a-form-item>
+              <a-form-item v-if="isShowSms">
+                <div>
+                  请使用手机号(<span style="font-weight: bold;color:#1890ff">{{usernameTips}}</span>)接收短信验证码
+                </div>
+              </a-form-item>
+              <a-form-item v-if="isShowSms">
+                <a-select
+                  show-search
+                  placeholder="请选择公司"
+                  option-filter-prop="children"
+                  size="large"
+                  v-decorator="[
+          'company_id',
+          {initialValue: defaultCompanyId},
+          { rules: [{ required: true, message: '请选择公司' }] },
+        ]"
+                >
+                  <a-select-option :value="item.id" :key="index" v-for="(item,index) in companyList">
+                    {{item.name}}
+                  </a-select-option>
+                </a-select>
               </a-form-item>
               <a-form-item v-if="isShowSms">
                 <a-row :gutter="8" style="margin: 0 -4px">
@@ -41,12 +63,12 @@
                     </a-input>
                   </a-col>
                   <a-col :span="8" style="padding-left: 4px">
-                    <a-button @click="getValid" :disabled="getValidStatus" style="width: 100%" class="captcha-button" size="large">{{getValidStatusText}}</a-button>
+                    <a-button htmlType="button" @click="getValid" :disabled="getValidStatus" style="width: 100%" class="captcha-button" size="large">{{getValidStatusText}}</a-button>
                   </a-col>
                 </a-row>
               </a-form-item>
               <a-form-item>
-                <a-button :loading="logging" style="width: 100%;" size="large" htmlType="submit" type="primary">登录系统</a-button>
+                <a-button :loading="logging" style="width: 100%;" size="large" htmlType="submit" type="primary">{{isShowSms? '提交验证码':'登录系统'}}</a-button>
               </a-form-item>
               <a-form-item>
                 <a-checkbox v-decorator="[
@@ -74,7 +96,7 @@
       v-model="modalVisible"
       title="服务隐私条款"
       okText="同意"
-      width="750"
+      :width="750"
       centered
       @ok="agreetClick(1)"
       @cancel="agreetClick(0)"
@@ -86,7 +108,7 @@
 
 <script>
 import CommonLayout from '@/layouts/CommonLayout'
-import {login, getRoutesConfig} from '@/services/user'
+import {login, getRoutesConfig, loginSms, sendSms} from '@/services/user'
 import {setAuthorization} from '@/utils/request'
 import {loadRoutes} from '@/utils/routerUtil'
 import {mapMutations} from 'vuex'
@@ -105,7 +127,9 @@ export default {
       getValidStatusText: "获取验证码",
       status:'login',
       smsToken:'',
-      companyList:[]
+      companyList:[],
+      defaultCompanyId:'',
+      usernameTips:''
     }
   },
   computed: {
@@ -113,8 +137,14 @@ export default {
       return this.$store.state.setting.systemName
     }
   },
+  mounted () {
+    this.form.setFieldsValue({
+      'username':'18566236830',
+      'password':'abc123456789'
+    });
+  },
   methods: {
-    ...mapMutations('account', ['setUser', 'setPermissions', 'setRoles']),
+    ...mapMutations('account', ['setCompanyId','setUser', 'setPermissions', 'setRoles', 'setCompanyList']),
     onSubmit (e) {
       e.preventDefault()
       this.form.validateFields((err) => {
@@ -122,24 +152,32 @@ export default {
           const name = this.form.getFieldValue('username')
           const password = this.form.getFieldValue('password')
           const agreet = this.form.getFieldValue('agreet')
+          const code = this.form.getFieldValue('validcode')
           if (!agreet) {
             this.error = "请同意隐私条款";
             return false
           }
           this.logging = true
+          if(this.token) {
+            loginSms(this.token, code).then(this.afterLogin)
+            return ;
+          }
           login(name, password, agreet).then(this.getSms)
         }
       })
     },
     getSms(res) {
+      const name = this.form.getFieldValue('username')
       this.logging = false
       const loginRes = res.data
       this.error = ""
       if (loginRes.errcode === 0) {
         this.status = loginRes.data.status
         this.token = loginRes.data.token
-        this.companyList = loginRes.data.companyList
+        this.companyList = loginRes.data.company_list
         this.isShowSms = true
+        this.defaultCompanyId = this.companyList[0]['id']
+        this.usernameTips = name.substr(0,3)+"****"+name.substr(7)
       } else {
         this.error = loginRes.errmsg
       }
@@ -149,10 +187,12 @@ export default {
       const loginRes = res.data
       console.log(loginRes)
       if (loginRes.errcode === 0) {
-        const {user, permissions, roles, message} = loginRes.data
+        const {user, permissions, roles, message, company_list, company_id} = loginRes.data
         this.setUser(user)
         this.setPermissions(permissions)
         this.setRoles(roles)
+        this.setCompanyList(company_list)
+        this.setCompanyId(company_id)
         setAuthorization({token: loginRes.data.token, expireAt: new Date(loginRes.data.expire_time)})
         // 获取路由配置
         getRoutesConfig().then(result => {
@@ -170,11 +210,16 @@ export default {
       this.form.setFieldsValue({agreet:status==1?true:false})
     },
     getValid () {
-      this.getValidStatus = !this.getValidStatus;
+      if(!this.token){
+        this.$message.info( '请重新登录' )
+        return false
+      }
+      this.getValidStatus = !this.getValidStatus
+      let time = ''
       if (this.getValidStatus) {
         let s = 120
         this.getValidStatusText = s + "秒"
-        let time = setInterval(() => {
+        time = setInterval(() => {
           if (s==1) {
             this.getValidStatusText = "获取验证码"
             clearInterval(time)
@@ -185,6 +230,15 @@ export default {
           this.getValidStatusText = s + "秒"
         }, 1000)
       }
+      sendSms(this.token,this.defaultCompanyId).then(( ret ) => {
+        if (ret.data.errcode) {
+          this.$message.info( ret.data.errmsg )
+          this.getValidStatusText = "获取验证码"
+          clearInterval(time)
+          this.getValidStatus = false
+          return ;
+        }
+      })
     }
   }
 }

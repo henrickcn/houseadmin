@@ -11,12 +11,16 @@
       </a-menu-item>
       <a-menu-item>
         <a-icon type="setting" />
-        <span>设置</span>
+        <span>个人设置</span>
+      </a-menu-item>
+      <a-menu-item>
+        <a-icon type="question-circle-o" />
+        <span>工单反馈</span>
       </a-menu-item>
       <a-menu-divider />
       <a-menu-item @click="logout">
         <a-icon style="margin-right: 8px;" type="poweroff" />
-        <span>退出登录</span>
+        <span>安全退出</span>
       </a-menu-item>
     </a-menu>
   </a-dropdown>
