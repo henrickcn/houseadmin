@@ -43,7 +43,7 @@ const options = {
           component: () => import('@/pages/dashboard/index'),
         },
         {
-          path: 'system',
+          path: 'base',
           name: '系统管理',
           meta: {
             icon: 'appstore'
@@ -51,9 +51,9 @@ const options = {
           component: BlankView,
           children: [
             {
-              path: 'staff',
+              path: 'staff/lists',
               name: '账户管理',
-              component: () => import('@/pages/system/staff/Lists'),
+              component: () => import('@/pages/base/staff/Lists'),
             },
             {
               path: 'auth',
