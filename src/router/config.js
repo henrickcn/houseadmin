@@ -51,9 +51,27 @@ const options = {
           component: BlankView,
           children: [
             {
-              path: 'staff/lists',
+              path: 'staff',
               name: '账户管理',
-              component: () => import('@/pages/base/staff/Lists'),
+              meta: {
+                icon: 'user'
+              },
+              component: BlankView,
+              children: [
+                {
+                  path: 'lists',
+                  name: '管理员列表',
+                  component: () => import('@/pages/base/staff/Lists'),
+                },
+                {
+                  path: 'detail',
+                  name: '管理员编辑',
+                  meta: {
+                    invisible: true
+                  },
+                  component: () => import('@/pages/base/staff/Detail'),
+                }
+              ]
             },
             {
               path: 'auth',
@@ -78,11 +96,6 @@ const options = {
             {
               path: 'workplace',
               name: '工作台',
-              meta: {
-                page: {
-                  closable: false
-                }
-              },
               component: () => import('@/pages/dashboard/workplace'),
             },
             {

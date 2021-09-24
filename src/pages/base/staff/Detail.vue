@@ -1,62 +1,14 @@
 <template>
   <div class="table">
-    <div style="text-align:right">
-      <a-button @click="addUser" class="opt-btn" type="primary" icon="plus" shape="round">
-        添加用户
-      </a-button>
-      <a-button type="primary" icon="minus" shape="round">
-        删除用户
-      </a-button>
-    </div>
-    <advance-table
-      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :columns="columns"
-      :scroll="{ x: 300, y: 570 }"
-      :data-source="dataSource"
-      title="账户管理"
-      :loading="loading"
-      rowKey="id"
-      @search="onSearch"
-      @refresh="onRefresh"
-      :format-conditions="true"
-      @reset="onReset"
-      :pagination="{
-        current: page,
-        pageSize: pageSize,
-        total: total,
-        showSizeChanger: true,
-        showLessItems: true,
-        showQuickJumper: true,
-        showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，总计 ${total} 条`,
-        onChange: onPageChange,
-        onShowSizeChange: onSizeChange,
-      }"
-    >
-      <template slot="statusTitle">
-        状态<a-icon style="margin: 0 4px" type="info-circle" />
-      </template>
-      <template slot="send" slot-scope="{text}">
-        {{text ? '是' : '否'}}
-      </template>
-      <template slot="status" slot-scope="{text}">
-        {{text | statusStr}}
-      </template>
-      <template slot="opt">
-        <a-button type="link" icon="highlight" size="small">
-          编辑
-        </a-button>
-      </template>
-    </advance-table>
+    
   </div>
 </template>
 
 <script>
-  import AdvanceTable from '@/components/table/advance/AdvanceTable'
   import staff from '@/services/base/staff/lists'
 
   export default {
-    name: 'baseStaffLists',
-    components: {AdvanceTable},
+    name: 'baseStaffDetail',
     filters: {
       statusStr(val) {
         switch (parseInt(val)) {
@@ -133,7 +85,8 @@
       }
     },
     created() {
-      this.getList()
+      console.log("=====")
+      //this.getList()
     },
     methods: {
       getList() {
